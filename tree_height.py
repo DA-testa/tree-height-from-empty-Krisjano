@@ -1,33 +1,46 @@
-# python3
-
-import sys
 import threading
-import numpy
-
+import sys
 
 def compute_height(n, parents):
-    # Write this function
-    max_height = 0
-    # Your code here
-    return max_height
+    max = 0
+    temp = 0
+    treeheight = [-1] * n
+
+    def get_height(index):
+        if treeheight[index] != -1:
+            return treeheight[index]
+        elif parents[index] == -1:
+            treeheight[index] = 1
+            return 1
+        else:
+            treeheight[index] = get_height(parents[index]) + 1
+            return treeheight[index]
+
+    for i in range(n):
+        temp = get_height(i)
+        if temp > max:
+            max = temp
 
 
-def main():
-    # implement input form keyboard and from files
-    
-    # let user input file name to use, don't allow file names with letter a
-    # account for github input inprecision
-    
-    # input number of elements
-    # input values in one variable, separate with space, split these values in an array
-    # call the function and output it's result
-    pass
+    return max
 
-# In Python, the default limit on recursion depth is rather low,
-# so raise it here for this problem. Note that to take advantage
-# of bigger stack, we have to launch the computation in a new thread.
-sys.setrecursionlimit(10**7)  # max depth of recursion
-threading.stack_size(2**27)   # new thread will get stack of such size
+
+def main(): 
+    word = input()
+    if 'I' in word: 
+        n = int(input())
+        parents = list(map(int, input().split()))
+    elif word[0] == "F":
+        filename = input().strip()
+        filepath = 'test/' + filename
+        if filename.endswith("a"):
+            return
+        else:
+            with open(filepath, 'r') as fn:
+                n = int(fn.readline())
+                parents = list(map(int, fn.readline().split()))
+    print (compute_height(n, parents))
+
+sys.setrecursionlimit(10**7)
+threading.stack_size(2**27)
 threading.Thread(target=main).start()
-main()
-# print(numpy.array([1,2,3]))
